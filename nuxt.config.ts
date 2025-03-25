@@ -1,10 +1,16 @@
 import type { NuxtConfig } from '@nuxt/schema'
+import Aura from '@primeuix/themes/aura';
+import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
   srcDir: 'src/',
+  css: [
+    '~/assets/css/main.css',
+    '~/assets/scss/index.scss',
+  ],
   components: [
     {
       path: '~/components',
@@ -18,14 +24,23 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon',
     '@primevue/nuxt-module',
+    '@nuxt/test-utils/module',
+    '@vueuse/nuxt',
+    '@vueuse/motion/nuxt'
   ],
-  runtimeConfig: {
-    public: {
-      GQL_HOST: 'http://218.148.0.25:8080/graphiql?path=/graphql' // overwritten by process.env.GQL_HOST
-    }
-  },
+  // eslint: {
+  //   config: {
+  //     standalone: false
+  //   }
+  // },
   vue: {
     propsDestructure: true
+  },
+  vite: {
+    plugins: [
+      // @ts-expect-error - tailwindcss plugin typing issue
+      tailwindcss(),
+    ],
   },
   primevue: {
     autoImport: true,
@@ -33,7 +48,10 @@ export default defineNuxtConfig({
       include: ['*']
     },
     options: {
-      ripple: true
+      ripple: true,
+      theme: {
+        preset: Aura
+      }
     }
   }
 } satisfies NuxtConfig)
