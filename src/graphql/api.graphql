@@ -1,0 +1,450 @@
+query systemCode {
+    getSystemCodeAll {
+        isDeleted
+        parentCdId
+        cdValue
+        cdType
+        cdTitle
+        cdId
+    }
+}
+query getUser ($id: ID!) {
+    getUser(id : $id) {
+        email
+        userId
+        loginId
+    }
+}
+
+query getUserList {
+    getUserList {
+        email
+        userId
+        loginId
+    }
+}
+
+query getAlcoholDetail($alcoholId: ID!) {
+    getAlcoholToAlcholId(alcoholId: $alcoholId) {
+        alcoholId
+        country
+        distilillery
+        name
+        subType
+        type
+        isDeleted
+    }
+}
+
+query getAlcoholList($alcohol: String!,$sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
+    getAlcoholToName(name: $alcohol, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
+        data {
+            alcoholId
+            country
+            distilillery
+            name
+            subType
+            type
+            isDeleted
+        }
+        currentPage
+        perPage
+        totalCount
+        totalPages
+    }
+}
+
+query getTastingNoteList($title: String!,$userId: ID! $sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
+    getTastingNotesByTitle(title: $title,userId: $userId, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
+        data {
+            alcoholId
+            alcoholName
+            userId
+            userNickName
+            attachFiles { attachFileId filePath originalFileName }
+            hashTag
+            rating
+            review
+            tastingNoteId
+            userId
+            drinkDate
+            isLiked
+            likeCount
+            commentCount
+            title
+            updatedAt
+            createdAt
+        }
+        currentPage
+        perPage
+        totalCount
+        totalPages
+    }
+}
+
+query getTastingNoteListByUser($userId: Int!, $sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
+    getTastingNotesUser(userId: $userId, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
+        data {
+            alcoholId
+            alcoholName
+            userId
+            userNickName
+            attachFiles { attachFileId filePath originalFileName }
+            hashTag
+            rating
+            review
+            tastingNoteId
+            userId
+            drinkDate
+            title
+            isLiked
+            likeCount
+            updatedAt
+            createdAt
+            commentCount
+        }
+        currentPage
+        perPage
+        totalCount
+        totalPages
+    }
+}
+
+
+
+query getTastingNoteDetail($tastingNoteId: ID!, $userId: ID!) {
+    getTastingNotesId(tastingNoteId: $tastingNoteId, userId: $userId) {
+        acidity
+        afterglow
+        alcoholId
+        alcoholName
+        userId
+        attachFiles { attachFileId filePath originalFileName }
+        body
+        color
+        concentration
+        drinkAmount
+        drinkAmountType
+        drinkDate
+        etcScentType
+        fruity
+        grainy
+        isDeleted
+        isLiked
+        likeCount
+        commentCount
+        hashTag
+        pairingRate
+        purchasePrice
+        rating
+        review
+        scentType
+        sweety
+        tastingNoteId
+        sparkling
+        temperature
+        title
+        togetherComment
+        togetherFood
+        userId
+        updatedAt
+        createdAt
+    }
+}
+
+
+
+
+mutation createTastingNote ($tastingNote: TnRequestAdd!) {
+    tnCreate(request: $tastingNote) {
+        acidity
+        afterglow
+        alcoholId
+        body
+        color
+        concentration
+        drinkAmount
+        drinkAmountType
+        drinkDate
+        etcScentType
+        fruity
+        grainy
+        hashTag
+        isDeleted
+        pairingRate
+        purchasePrice
+        rating
+        review
+        scentType
+        sparkling
+        sweety
+        tastingNoteId
+        temperature
+        title
+        togetherComment
+        togetherFood
+        userId
+        attachFileGroupId
+    }
+}
+
+
+mutation modifyTastingNote ($tastingNote: TnRequestModify!) {
+    tnModify(request: $tastingNote) {
+        acidity
+        afterglow
+        alcoholId
+        body
+        color
+        concentration
+        drinkAmount
+        drinkAmountType
+        drinkDate
+        etcScentType
+        fruity
+        grainy
+        hashTag
+        isDeleted
+        pairingRate
+        purchasePrice
+        rating
+        review
+        scentType
+        sparkling
+        sweety
+        tastingNoteId
+        temperature
+        title
+        togetherComment
+        togetherFood
+        userId
+        attachFiles { attachFileId filePath originalFileName }
+        tastingNoteId
+        updatedAt
+        createdAt
+    }
+}
+
+mutation deleteTastingNote ($tastingNoteId: ID!) {
+    tnDeleted(request: {tastingNoteId: $tastingNoteId}) {
+        tastingNoteId
+    }
+}
+
+mutation createTastingNoteTemp ($tastingNoteTemp: TnTRequestAdd!) {
+    tnTCreate(request: $tastingNoteTemp) {
+        acidity
+        afterglow
+        alcoholId
+        body
+        color
+        concentration
+        drinkAmount
+        drinkAmountType
+        drinkDate
+        etcScentType
+        fruity
+        grainy
+        hashTag
+        isDeleted
+        pairingRate
+        purchasePrice
+        rating
+        review
+        scentType
+        sparkling
+        sweety
+        temperature
+        title
+        togetherComment
+        togetherFood
+        userId
+        attachFileGroupId
+        tastingNoteTempId
+    }
+}
+
+mutation modifyTastingNoteTemp ($tastingNoteTemp: TnTRequestModify!) {
+    tnTModify(request: $tastingNoteTemp) {
+        tastingNoteTempId
+        acidity
+        afterglow
+        alcoholId
+        body
+        color
+        concentration
+        drinkAmount
+        drinkAmountType
+        drinkDate
+        etcScentType
+        fruity
+        grainy
+        hashTag
+        isDeleted
+        pairingRate
+        purchasePrice
+        rating
+        review
+        scentType
+        sparkling
+        sweety
+        temperature
+        title
+        togetherComment
+        togetherFood
+        userId
+        attachFileGroupId
+    }
+}
+
+mutation deleteTastingNoteTemp ($tastingNoteTempId: ID!) {
+    tnTDeleted(request: {tastingNoteTempId: $tastingNoteTempId}) {
+        tastingNoteTempId
+    }
+}
+
+
+query getTastingNoteTempListByUser($userId: Int!, $sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
+    getTempTastingNotesUser(userId: $userId, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
+        data {
+            acidity
+            afterglow
+            alcoholId
+            alcoholName
+            userId
+            attachFiles {
+                attachFileId
+                createdAt
+                deletedAt
+                fileExtension
+                fileFullPath
+                filePath
+                fileSize
+                fileType
+                isDeleted
+                originalFileName
+            }
+            body
+            color
+            concentration
+            drinkAmount
+            drinkAmountType
+            drinkDate
+            etcScentType
+            fruity
+            grainy
+            hashTag
+            isDeleted
+            pairingRate
+            purchasePrice
+            rating
+            review
+            scentType
+            sweety
+            tastingNoteTempId
+            sparkling
+            temperature
+            title
+            togetherComment
+            togetherFood
+            userId
+            updatedAt
+            createdAt
+        }
+        currentPage
+        perPage
+        totalCount
+        totalPages
+    }
+}
+
+query getCommentsByTastingNoteId($tastingNoteId: ID!, $pageNum: Int!, $perPage: Int!, $userId: ID!) {
+    getCommentsByTastingNoteId(pageNum: $pageNum, perPage: $perPage, tastingNoteId: $tastingNoteId, userId: $userId) {
+        data {
+            commentId
+            content
+            createdAt
+            deletedAt
+            hasMoreReplies
+            parentId
+            isLiked
+            likeCount
+            replies {
+                commentId
+                parentId
+                depth
+            }
+            totalReplies
+            tastingNoteId
+            updatedAt
+            userId
+            userNickName
+            userProfileImg
+        }
+        currentPage
+        perPage
+        totalCount
+        totalPages
+    }
+}
+
+query getRepliesByParentId($parentId: ID!, $pageNum: Int!, $perPage: Int!, $userId: ID!) {
+    getRepliesByParentId(pageNum: $pageNum, perPage: $perPage, parentId: $parentId, userId: $userId) {
+        data {
+            userProfileImg
+            userNickName
+            userId
+            updatedAt
+            parentId
+            depth
+            createdAt
+            deletedAt
+            content
+            commentId
+            isLiked
+            likeCount
+        }
+        currentPage
+        perPage
+        totalCount
+        totalPages
+    }
+}
+
+
+mutation cmtCreate ($cmtRequestAdd: CmtRequestAdd!) {
+    cmtCreate(request: $cmtRequestAdd) {
+        commentId
+        parentId
+        tastingNoteId
+        userId
+        createdAt
+    }
+}
+
+mutation cmtDelete ($commentId: ID!, $userId: Int!) {
+    deleteComment(request: {commentId: $commentId, userId: $userId}) {
+        commentId
+        parentId
+        tastingNoteId
+        userId
+        deletedAt
+    }
+}
+
+mutation cmtModify ($cmtRequestAdd: CmtRequestModify!) {
+    editComment(request: $cmtRequestAdd) {
+        commentId
+        parentId
+        tastingNoteId
+        userId
+        updatedAt
+    }
+}
+mutation tnLike ($tastingNoteId: ID!, $userId: ID!) {
+    tnLike(request: {tastingNoteId: $tastingNoteId, userId: $userId})
+}
+
+mutation  cmtLike ($commentId: ID!, $userId: ID!) {
+    cmtLike(request: {userId: $userId, commentId: $commentId})
+}
