@@ -1,8 +1,10 @@
 <template>
   <div>
-    <h1>Article</h1>
+    <SearchFilter/>
   </div>
 </template>
 
 <script setup lang="ts">
+import SearchFilter from '~/components/pages/article/SearchFilter.vue';
+
 </script>

@@ -41,6 +41,7 @@ body {
   }
   
   .lnb-menu {
+    border-radius: 0;
     height: 100vh;
     padding: 1rem;
     overflow-y: auto;
@@ -52,12 +53,11 @@ body {
   top: 0;
   z-index: 999;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  &.menu-opened {
-    margin-left: 16px;;
-  }
+
   
   .header-menubar {
-    
+    border-left: 0;
+    border-radius: 0;
     .page-title {
       font-size: 1.25rem;
       font-weight: 600;
