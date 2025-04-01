@@ -4,7 +4,7 @@ import main from './user';
 import type { UserRowData } from './user';
 
 const { majorList } = main();
-const { dataList, pagination } = storeToRefs(majorList);
+const { dataList, pagination, isLoading, error } = storeToRefs(majorList);
 const { handleCheck } = majorList;
 const rowKey = (row: UserRowData) => row.userId ?? 'error';
 </script>
@@ -14,12 +14,26 @@ const rowKey = (row: UserRowData) => row.userId ?? 'error';
     hoverable
     class="data-list-wrapper"
   >
-    <n-data-table
-      :columns="majorList.dataColumns"
-      :data="dataList"
-      :pagination="pagination"
-      :row-key="rowKey"
-      @update:checked-row-keys="handleCheck"
-    />
+    <template v-if="isLoading">
+      <n-space vertical>
+        <n-skeleton
+          v-for="i in 11"
+          :key="i"
+          height="42px"
+        />
+      </n-space>
+    </template>
+    <template v-else-if="error">
+      Error: {{ error.message }}
+    </template>
+    <template v-else>
+      <n-data-table
+        :columns="majorList.dataColumns"
+        :data="dataList"
+        :pagination="pagination"
+        :row-key="rowKey"
+        @update:checked-row-keys="handleCheck"
+      />
+    </template>
   </n-card>
 </template>
