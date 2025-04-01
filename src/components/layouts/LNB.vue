@@ -2,9 +2,13 @@
 import type { MenuOption } from 'naive-ui';
 import { h, ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import { Icon } from '#components';
+import useConfigStore from '~/stores/configStore';
 
-const collapsed = ref(false);
+const configStore = useConfigStore();
+const { menuCollapsed } = storeToRefs(configStore);
+
 const selectedMenu = ref<string>('');
 
 const route = useRoute();
@@ -21,18 +25,16 @@ const menuOptions: MenuOption[] = menuData.map((item) => {
     icon: renderIcon(item.icon, 'text-2xl'),
   };
 });
-
-console.log(menuOptions);
 </script>
 
 <template>
   <div class="lnb-container">
     <div
       class="logo-wrapper"
-      :class="{ collapsed }"
+      :class="{ collapsed: menuCollapsed }"
     >
       <Icon
-        name="tabler:adjustments-pin"
+        name="octicon:settings"
         class="text-4xl"
       />
       <div class="logo-text">
@@ -46,14 +48,14 @@ console.log(menuOptions);
       collapse-mode="width"
       :collapsed-width="64"
       :width="240"
-      :collapsed="collapsed"
+      :collapsed="menuCollapsed"
       show-trigger
-      @collapse="collapsed = true"
-      @expand="collapsed = false"
+      @collapse="menuCollapsed = true"
+      @expand="menuCollapsed = false"
     >
       <n-menu
         v-model:value="selectedMenu"
-        :collapsed="collapsed"
+        :collapsed="menuCollapsed"
         :collapsed-width="64"
         :collapsed-icon-size="22"
         :options="menuOptions"

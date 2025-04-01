@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const a = 43543;
 
-const b = 543;
 </script>
 
 <template>

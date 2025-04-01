@@ -1,4 +1,4 @@
-import type { NuxtConfig } from '@nuxt/schema';
+import type { NuxtConfig, NuxtPage } from '@nuxt/schema';
 import tailwindcss from '@tailwindcss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
@@ -6,7 +6,7 @@ import Components from 'unplugin-vue-components/vite';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: '2025-04-01',
   devtools: { enabled: true },
   srcDir: 'src/',
   build: {
@@ -22,17 +22,8 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/image',
-    '@nuxt/test-utils',
-    '@nuxt/fonts',
-    '@nuxt/icon',
-    '@nuxt/test-utils/module',
-    '@vueuse/nuxt',
-    '@vueuse/motion/nuxt',
-    '@bg-dev/nuxt-naiveui',
-  ],
+  modules: ['@nuxt/eslint',
+    '@nuxt/image', '@nuxt/test-utils', '@nuxt/fonts', '@nuxt/icon', '@nuxt/test-utils/module', '@vueuse/nuxt', '@vueuse/motion/nuxt', '@bg-dev/nuxt-naiveui'],
   eslint: {
     config: {
       stylistic: {
@@ -65,5 +56,26 @@ export default defineNuxtConfig({
         resolvers: [NaiveUiResolver()],
       }),
     ],
+  },
+  hooks: {
+    'pages:extend'(pages) {
+      // remove routes
+      function removePagesMatching(pattern: RegExp, pages: NuxtPage[] = []) {
+        const pagesToRemove: NuxtPage[] = [];
+        for (const page of pages) {
+          if (page.file && pattern.test(page.file)) {
+            pagesToRemove.push(page);
+          }
+          else {
+            removePagesMatching(pattern, page.children);
+          }
+        }
+        for (const page of pagesToRemove) {
+          pages.splice(pages.indexOf(page), 1);
+        }
+      }
+      removePagesMatching(/\.{ts,tsx,js,jsx}$/, pages);
+      removePagesMatching(/_subs/, pages);
+    },
   },
 } satisfies NuxtConfig);

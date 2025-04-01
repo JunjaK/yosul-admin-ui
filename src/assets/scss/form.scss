@@ -1,0 +1,48 @@
+.search-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+
+  .search-filter-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .select-input {
+    &.small {
+      width: 120px;
+    }
+    &.medium {
+      width: 160px;
+    }
+    &.large {
+      width: 240px;
+    }
+  }
+  .text-input {
+    &.small {
+      width: 240px;
+    }
+    &.medium {
+      width: 320px;
+    }
+    &.large {
+      width: 400px;
+    }
+  }
+
+  .date-range-input {
+    width: 280px;
+  }
+}
+
+.search-filter-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+  .search-filter-button-item {
+    width: 80px;
+  }
+}

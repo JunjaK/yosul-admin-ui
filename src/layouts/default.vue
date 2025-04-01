@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { darkTheme, dateKoKR, koKR } from 'naive-ui';
 import AppFooter from '~/components/layouts/AppFooter.vue';
-import AppNav from '~/components/layouts/AppNav.vue';
+import AppNav from '~/components/layouts/AppHeader.vue';
 import LNB from '~/components/layouts/LNB.vue';
 
 defineOptions({

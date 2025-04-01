@@ -11,16 +11,28 @@ query systemCode {
 query getUser ($id: ID!) {
     getUser(id : $id) {
         email
-        userId
+        birthday
+        isDeleted
         loginId
+        nickname
+        phoneNumber
+        profileImageId
+        userId
+        userProfileImg
     }
 }
 
 query getUserList {
     getUserList {
         email
-        userId
+        birthday
+        isDeleted
         loginId
+        nickname
+        phoneNumber
+        profileImageId
+        userId
+        userProfileImg
     }
 }
 
