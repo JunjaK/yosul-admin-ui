@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import SearchFilter from '~/components/pages/article/SearchFilter.vue';
 </script>
 
 <template>
   <div>
-    <SearchFilter />
+    <h1>Article</h1>
   </div>
 </template>
