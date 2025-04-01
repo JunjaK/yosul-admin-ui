@@ -24,25 +24,32 @@ body {
 }
 
 .lnb-container {
-  width: 250px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  transform: translateX(0);
-  transition: transform 0.3s ease;
-  
-  &.lnb-container-closed {
-    transform: translateX(-100%);
+  height: 100dvh;
+  border-right: 1px solid rgba(255, 255, 255, 0.09);
+
+  .lnb-divider {
+    margin-bottom: 0;
   }
-  
+  .logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 64px;
+    gap: 0.5rem;
+    margin: 20px 0;
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      display: unset;
+    }
+    &.collapsed {
+      .logo-text {
+        display: none;
+      }
+    }
+  }
   .lnb-menu {
-    border-radius: 0;
-    height: 100vh;
-    padding: 1rem;
-    overflow-y: auto;
+    height: calc(100dvh - 104px);
   }
 }
 
