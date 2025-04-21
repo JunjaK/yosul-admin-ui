@@ -2,9 +2,12 @@ import { ref } from 'vue';
 import type { FormInst, FormItemRule, DataTableColumns, DataTableRowKey } from 'naive-ui';
 import { useQuery } from '@tanstack/vue-query';
 import { useApolloClient } from '@vue/apollo-composable';
-import type { GetUserListQuery } from '~/graphql/apis/graphql';
+import dayjs from 'dayjs';
+import type { GetUserListQuery, GetUserListQueryVariables } from '~/graphql/apis/graphql';
 import { GetUserListDocument } from '~/graphql/apis/graphql';
 import { defineLocalStore } from '~/plugins/storeManager';
+
+type OptionalGetUserListQueryVariables = Partial<GetUserListQueryVariables>;
 
 interface MajorForm {
   searchValue?: string;
@@ -125,10 +128,14 @@ function defMajorListStore() {
   const dataList = ref<UserRowData[]>([]);
   const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 
-  const searchParams = ref({
-    searchType: '',
-    searchValue: '',
-    createdAt: null as [number, number] | null,
+  const searchParams = ref<OptionalGetUserListQueryVariables>({
+    nickname: '',
+    loginId: '',
+    createdAfter: '',
+    createdBefore: '',
+    updatedAfter: '',
+    updatedBefore: '',
+    userId: undefined,
   });
 
   const pagination = reactive({
@@ -155,6 +162,8 @@ function defMajorListStore() {
           nickname: e?.nickname,
           phoneNumber: e?.phoneNumber,
           profileImageId: e?.profileImageId,
+          userId: e?.userId,
+          userProfileImg: e?.userProfileImg,
         };
       }) as UserRowData[] || [];
 
@@ -163,11 +172,22 @@ function defMajorListStore() {
   });
 
   function updateSearchParams(form: MajorForm) {
+    const createdDates = form.createdAt
+      ? {
+          createdAfter: dayjs(form.createdAt[0]).format('YYYY-MM-DD'),
+          createdBefore: dayjs(form.createdAt[1]).format('YYYY-MM-DD'),
+        }
+      : {
+          createdAfter: '',
+          createdBefore: '',
+        };
+
     searchParams.value = {
-      searchType: form.searchType || '',
-      searchValue: form.searchValue || '',
-      createdAt: form.createdAt || null,
+      ...createdDates,
+      [form.searchType]: form.searchValue || '',
     };
+
+    console.log(searchParams.value);
   }
 
   function handleCheck(keys: DataTableRowKey[]) {
