@@ -1,3 +1,4 @@
+# systemCode
 query systemCode {
     getSystemCodeAll {
         isDeleted
@@ -8,34 +9,51 @@ query systemCode {
         cdId
     }
 }
-query getUser ($id: ID!) {
-    getUser(id : $id) {
-        email
+
+# User
+query getUser($createdAfter: String!, $createdBefore: String!, $loginId: Int!, $nickname: String!, $updatedAfter: String!, $updatedBefore: String!, $userId: Int!) {
+    getUser(
+    createdAfter: $createdAfter
+    createdBefore: $createdBefore
+    loginId: $loginId
+    nickname: $nickname
+    updatedAfter: $updatedAfter
+    updatedBefore: $updatedBefore
+    userId: $userId
+  ) {
+    birthday
+    createdAt
+    email
+    isDeleted
+    level
+    loginId
+    nickname
+    phoneNumber
+    profileImageId
+    updatedAt
+    userId
+    userProfileImg
+  }
+}
+
+query getUserList($loginId: String!, $nickname: String!, $userId: Int!, $createdAfter: String!, $createdBefore: String!, $updatedAfter: String!, $updatedBefore: String!) {
+    getUserList(loginId: $loginId, nickname: $nickname, userId: $userId, createdAfter: $createdAfter, createdBefore: $createdBefore, updatedAfter: $updatedAfter, updatedBefore: $updatedBefore) {
         birthday
+        createdAt
+        email
         isDeleted
+        level
         loginId
         nickname
         phoneNumber
         profileImageId
+        updatedAt
         userId
         userProfileImg
     }
 }
 
-query getUserList {
-    getUserList {
-        email
-        birthday
-        isDeleted
-        loginId
-        nickname
-        phoneNumber
-        profileImageId
-        userId
-        userProfileImg
-    }
-}
-
+# Alcohol
 query getAlcoholDetail($alcoholId: ID!) {
     getAlcoholToAlcholId(alcoholId: $alcoholId) {
         alcoholId
@@ -48,81 +66,144 @@ query getAlcoholDetail($alcoholId: ID!) {
     }
 }
 
-query getAlcoholList($alcohol: String!,$sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
-    getAlcoholToName(name: $alcohol, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
+query getAlcoholList($pageNum: Int!, $perPage: Int!, $country: String!, $createdAfter: String!, $createdBefore: String!, $name: String!, $sortBy: String!, $updatedAfter: String!, $sortDirection: String!, $updatedBefore: String!) {
+    getAlcoholListForAdmin(
+        pageNum: $pageNum
+        perPage: $perPage
+        country: $country
+        createdAfter: $createdAfter
+        createdBefore: $createdBefore
+        name: $name
+        sortBy: $sortBy
+        updatedAfter: $updatedAfter
+        sortDirection: $sortDirection
+        updatedBefore: $updatedBefore
+    ) {
+        currentPage
+        perPage
+        totalPages
+        totalCount
         data {
+            name
+            type
+            updatedAt
+            subType
+            isDeleted
+            deletedAt
+            distilillery
+            createdAt
             alcoholId
             country
-            distilillery
-            name
-            subType
-            type
+        }
+    }
+}
+
+mutation createAlcohol($name: String!, $brand: Int!, $country: String!, $distilillery: String!, $isDeleted: Boolean!, $subType: Int!, $type: Int!) {
+    alcoholCreate(
+        request: {
+            name: $name,
+            brand: $brand,
+            country: $country,
+            distilillery: $distilillery,
+            isDeleted: $isDeleted,
+            subType: $subType,
+            type: $type
+        }
+    ) {
+        alcoholId
+        country
+        createdAt
+        deletedAt
+        distilillery
+        isDeleted
+        name
+        type
+        subType
+        updatedAt
+    }
+}
+
+mutation deleteAlcohol($alcoholId: Int!, $isDeleted: Boolean!) {
+    alcoholDeleted(
+        request: {
+            alcoholId: $alcoholId,
+            isDeleted: $isDeleted
+        }
+    ) {
+        updatedAt
+        subType
+        type
+        name
+        isDeleted
+        distilillery
+        deletedAt
+        createdAt
+        country
+        alcoholId
+    }
+}
+
+mutation modifyAlcohol($alcoholId: Int!, $brand: Int!, $country: String!, $distilillery: String!, $isDeleted: Boolean!, $name: String!, $subType: Int!, $type: Int!) {
+    alcoholModified(
+        request: {
+            alcoholId: $alcoholId,
+            brand: $brand,
+            country: $country,
+            distilillery: $distilillery,
+            isDeleted: $isDeleted,
+            name: $name,
+            subType: $subType,
+            type: $type
+        }
+    ) {
+        updatedAt
+        type
+        subType
+        name
+        isDeleted
+        distilillery
+        deletedAt
+        createdAt
+        country
+        alcoholId
+    }
+}
+
+# TastingNote
+query getTastingNoteList($pageNum: Int!, $perPage: Int!, $alcohol: String!, $createdAfter: String!, $createdBefore: String!, $loginId: String!, $nickname: String!, $sortBy: String!, $sortDirection: String!, $title: String!, $updatedAfter: String!, $updatedBefore: String!) {
+    getTastingNotesForAdmin(
+        pageNum: $pageNum
+        perPage: $perPage
+        alcohol: $alcohol
+        createdAfter: $createdAfter
+        createdBefore: $createdBefore
+        loginId: $loginId
+        nickname: $nickname
+        sortBy: $sortBy
+        sortDirection: $sortDirection
+        title: $title
+        updatedAfter: $updatedAfter
+        updatedBefore: $updatedBefore
+    ) {
+        currentPage
+        data {
+            alcoholName
+            alcoholId
+            createdAt
+            deletedAt
+            drinkDate
+            review
+            rating
+            userId
+            userNickName
+            title
             isDeleted
         }
-        currentPage
         perPage
         totalCount
         totalPages
     }
 }
-
-query getTastingNoteList($title: String!,$userId: ID! $sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
-    getTastingNotesByTitle(title: $title,userId: $userId, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
-        data {
-            alcoholId
-            alcoholName
-            userId
-            userNickName
-            attachFiles { attachFileId filePath originalFileName }
-            hashTag
-            rating
-            review
-            tastingNoteId
-            userId
-            drinkDate
-            isLiked
-            likeCount
-            commentCount
-            title
-            updatedAt
-            createdAt
-        }
-        currentPage
-        perPage
-        totalCount
-        totalPages
-    }
-}
-
-query getTastingNoteListByUser($userId: Int!, $sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
-    getTastingNotesUser(userId: $userId, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
-        data {
-            alcoholId
-            alcoholName
-            userId
-            userNickName
-            attachFiles { attachFileId filePath originalFileName }
-            hashTag
-            rating
-            review
-            tastingNoteId
-            userId
-            drinkDate
-            title
-            isLiked
-            likeCount
-            updatedAt
-            createdAt
-            commentCount
-        }
-        currentPage
-        perPage
-        totalCount
-        totalPages
-    }
-}
-
-
 
 query getTastingNoteDetail($tastingNoteId: ID!, $userId: ID!) {
     getTastingNotesId(tastingNoteId: $tastingNoteId, userId: $userId) {
@@ -131,7 +212,11 @@ query getTastingNoteDetail($tastingNoteId: ID!, $userId: ID!) {
         alcoholId
         alcoholName
         userId
-        attachFiles { attachFileId filePath originalFileName }
+        attachFiles {
+            attachFileId
+            filePath
+            originalFileName
+        }
         body
         color
         concentration
@@ -163,43 +248,6 @@ query getTastingNoteDetail($tastingNoteId: ID!, $userId: ID!) {
         createdAt
     }
 }
-
-
-
-
-mutation createTastingNote ($tastingNote: TnRequestAdd!) {
-    tnCreate(request: $tastingNote) {
-        acidity
-        afterglow
-        alcoholId
-        body
-        color
-        concentration
-        drinkAmount
-        drinkAmountType
-        drinkDate
-        etcScentType
-        fruity
-        grainy
-        hashTag
-        isDeleted
-        pairingRate
-        purchasePrice
-        rating
-        review
-        scentType
-        sparkling
-        sweety
-        tastingNoteId
-        temperature
-        title
-        togetherComment
-        togetherFood
-        userId
-        attachFileGroupId
-    }
-}
-
 
 mutation modifyTastingNote ($tastingNote: TnRequestModify!) {
     tnModify(request: $tastingNote) {
@@ -237,46 +285,17 @@ mutation modifyTastingNote ($tastingNote: TnRequestModify!) {
     }
 }
 
-mutation deleteTastingNote ($tastingNoteId: ID!) {
+mutation deleteTastingNote($tastingNoteId: ID!) {
     tnDeleted(request: {tastingNoteId: $tastingNoteId}) {
         tastingNoteId
     }
 }
 
-mutation createTastingNoteTemp ($tastingNoteTemp: TnTRequestAdd!) {
-    tnTCreate(request: $tastingNoteTemp) {
-        acidity
-        afterglow
-        alcoholId
-        body
-        color
-        concentration
-        drinkAmount
-        drinkAmountType
-        drinkDate
-        etcScentType
-        fruity
-        grainy
-        hashTag
-        isDeleted
-        pairingRate
-        purchasePrice
-        rating
-        review
-        scentType
-        sparkling
-        sweety
-        temperature
-        title
-        togetherComment
-        togetherFood
-        userId
-        attachFileGroupId
-        tastingNoteTempId
-    }
-}
 
-mutation modifyTastingNoteTemp ($tastingNoteTemp: TnTRequestModify!) {
+
+# TastingNoteTemp
+
+mutation modifyTastingNoteTemp($tastingNoteTemp: TnTRequestModify!) {
     tnTModify(request: $tastingNoteTemp) {
         tastingNoteTempId
         acidity
@@ -309,92 +328,37 @@ mutation modifyTastingNoteTemp ($tastingNoteTemp: TnTRequestModify!) {
     }
 }
 
-mutation deleteTastingNoteTemp ($tastingNoteTempId: ID!) {
+mutation deleteTastingNoteTemp($tastingNoteTempId: ID!) {
     tnTDeleted(request: {tastingNoteTempId: $tastingNoteTempId}) {
         tastingNoteTempId
     }
 }
 
-
-query getTastingNoteTempListByUser($userId: Int!, $sortDirection: String!, $sortBy: String!, $pageNum: Int!, $perPage: Int!) {
-    getTempTastingNotesUser(userId: $userId, sortDirection: $sortDirection, sortBy: $sortBy, pageNum: $pageNum, perPage: $perPage) {
-        data {
-            acidity
-            afterglow
-            alcoholId
-            alcoholName
-            userId
-            attachFiles {
-                attachFileId
-                createdAt
-                deletedAt
-                fileExtension
-                fileFullPath
-                filePath
-                fileSize
-                fileType
-                isDeleted
-                originalFileName
-            }
-            body
-            color
-            concentration
-            drinkAmount
-            drinkAmountType
-            drinkDate
-            etcScentType
-            fruity
-            grainy
-            hashTag
-            isDeleted
-            pairingRate
-            purchasePrice
-            rating
-            review
-            scentType
-            sweety
-            tastingNoteTempId
-            sparkling
-            temperature
-            title
-            togetherComment
-            togetherFood
-            userId
-            updatedAt
-            createdAt
-        }
+# Comment
+query getCommentsList($pageNum: Int!, $perPage: Int!, $loginId: String!, $nickname: String!, $sortBy: String!, $sortDirection: String!, $tastingNoteTitle: String!) {
+    getCommentsForAdmin(
+        pageNum: $pageNum
+        perPage: $perPage
+        loginId: $loginId
+        nickname: $nickname
+        sortBy: $sortBy
+        sortDirection: $sortDirection
+        tastingNoteTitle: $tastingNoteTitle
+    ) {
         currentPage
         perPage
-        totalCount
-        totalPages
-    }
-}
-
-query getCommentsByTastingNoteId($tastingNoteId: ID!, $pageNum: Int!, $perPage: Int!, $userId: ID!) {
-    getCommentsByTastingNoteId(pageNum: $pageNum, perPage: $perPage, tastingNoteId: $tastingNoteId, userId: $userId) {
         data {
-            commentId
             content
             createdAt
             deletedAt
-            hasMoreReplies
-            parentId
-            isLiked
+            depth
             likeCount
-            replies {
-                commentId
-                parentId
-                depth
-            }
-            totalReplies
-            tastingNoteId
+            parentId
             updatedAt
             userId
             userNickName
-            userProfileImg
+            commentId
         }
-        currentPage
-        perPage
         totalCount
         totalPages
     }
@@ -423,18 +387,7 @@ query getRepliesByParentId($parentId: ID!, $pageNum: Int!, $perPage: Int!, $user
     }
 }
 
-
-mutation cmtCreate ($cmtRequestAdd: CmtRequestAdd!) {
-    cmtCreate(request: $cmtRequestAdd) {
-        commentId
-        parentId
-        tastingNoteId
-        userId
-        createdAt
-    }
-}
-
-mutation cmtDelete ($commentId: ID!, $userId: Int!) {
+mutation cmtDelete($commentId: ID!, $userId: Int!) {
     deleteComment(request: {commentId: $commentId, userId: $userId}) {
         commentId
         parentId
@@ -444,7 +397,7 @@ mutation cmtDelete ($commentId: ID!, $userId: Int!) {
     }
 }
 
-mutation cmtModify ($cmtRequestAdd: CmtRequestModify!) {
+mutation cmtModify($cmtRequestAdd: CmtRequestModify!) {
     editComment(request: $cmtRequestAdd) {
         commentId
         parentId
@@ -452,11 +405,4 @@ mutation cmtModify ($cmtRequestAdd: CmtRequestModify!) {
         userId
         updatedAt
     }
-}
-mutation tnLike ($tastingNoteId: ID!, $userId: ID!) {
-    tnLike(request: {tastingNoteId: $tastingNoteId, userId: $userId})
-}
-
-mutation  cmtLike ($commentId: ID!, $userId: ID!) {
-    cmtLike(request: {userId: $userId, commentId: $commentId})
 }
