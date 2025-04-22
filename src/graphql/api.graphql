@@ -11,7 +11,7 @@ query systemCode {
 }
 
 # User
-query getUser($createdAfter: String!, $createdBefore: String!, $loginId: Int!, $nickname: String!, $updatedAfter: String!, $updatedBefore: String!, $userId: Int!) {
+query getUser($createdAfter: String, $createdBefore: String, $loginId: Int, $nickname: String, $updatedAfter: String, $updatedBefore: String, $userId: Int) {
     getUser(
     createdAfter: $createdAfter
     createdBefore: $createdBefore
@@ -24,7 +24,6 @@ query getUser($createdAfter: String!, $createdBefore: String!, $loginId: Int!, $
     birthday
     createdAt
     email
-    isDeleted
     level
     loginId
     nickname
@@ -36,37 +35,58 @@ query getUser($createdAfter: String!, $createdBefore: String!, $loginId: Int!, $
   }
 }
 
-query getUserList($loginId: String!, $nickname: String!, $userId: Int!, $createdAfter: String!, $createdBefore: String!, $updatedAfter: String!, $updatedBefore: String!) {
-    getUserList(loginId: $loginId, nickname: $nickname, userId: $userId, createdAfter: $createdAfter, createdBefore: $createdBefore, updatedAfter: $updatedAfter, updatedBefore: $updatedBefore) {
-        birthday
-        createdAt
-        email
-        isDeleted
-        level
-        loginId
-        nickname
-        phoneNumber
-        profileImageId
-        updatedAt
-        userId
-        userProfileImg
+query getUserList($pageNum: Int!, $perPage: Int!, $createdAfter: String, $createdBefore: String, $loginId: String, $nickname: String, $sortBy: String, $sortDirection: String, $updatedAfter: String, $updatedBefore: String, $userId: ID) {
+    getUserList(
+    pageNum: $pageNum
+    perPage: $perPage
+    createdAfter: $createdAfter
+    createdBefore: $createdBefore
+    loginId: $loginId
+    nickname: $nickname
+    sortBy: $sortBy
+    sortDirection: $sortDirection
+    updatedBefore: $updatedBefore
+    userId: $userId
+    updatedAfter: $updatedAfter
+  ) {
+    currentPage
+    totalCount
+    totalPages
+    perPage
+    data {
+      userStatus
+      userId
+      updatedAt
+      signUpType
+      phoneNumber
+      nickname
+      loginId
+      level
+    #   isDeleted
+      createdAt
+      email
+      birthday
     }
+  }
 }
 
 # Alcohol
 query getAlcoholDetail($alcoholId: ID!) {
     getAlcoholToAlcholId(alcoholId: $alcoholId) {
+        name
+        type
+        updatedAt
+        subType
+        isDeleted
+        deletedAt
+        distilillery
+        createdAt
         alcoholId
         country
-        distilillery
-        name
-        subType
-        type
-        isDeleted
     }
 }
 
-query getAlcoholList($pageNum: Int!, $perPage: Int!, $country: String!, $createdAfter: String!, $createdBefore: String!, $name: String!, $sortBy: String!, $updatedAfter: String!, $sortDirection: String!, $updatedBefore: String!) {
+query getAlcoholList($pageNum: Int!, $perPage: Int!, $country: String, $createdAfter: String, $createdBefore: String, $name: String, $sortBy: String, $updatedAfter: String, $sortDirection: String, $updatedBefore: String) {
     getAlcoholListForAdmin(
         pageNum: $pageNum
         perPage: $perPage
@@ -170,7 +190,7 @@ mutation modifyAlcohol($alcoholId: Int!, $brand: Int!, $country: String!, $disti
 }
 
 # TastingNote
-query getTastingNoteList($pageNum: Int!, $perPage: Int!, $alcohol: String!, $createdAfter: String!, $createdBefore: String!, $loginId: String!, $nickname: String!, $sortBy: String!, $sortDirection: String!, $title: String!, $updatedAfter: String!, $updatedBefore: String!) {
+query getTastingNoteList($pageNum: Int!, $perPage: Int!, $alcohol: String, $createdAfter: String, $createdBefore: String, $loginId: String, $nickname: String, $sortBy: String, $sortDirection: String, $title: String, $updatedAfter: String, $updatedBefore: String) {
     getTastingNotesForAdmin(
         pageNum: $pageNum
         perPage: $perPage
@@ -294,6 +314,41 @@ mutation deleteTastingNote($tastingNoteId: ID!) {
 
 
 # TastingNoteTemp
+query getTastingNoteTempList($pageNum: Int!, $perPage: Int!, $alcohol: String, $createdAfter: String, $createdBefore: String, $loginId: String, $nickname: String, $sortBy: String, $sortDirection: String, $title: String, $updatedAfter: String, $updatedBefore: String) {
+  getTastingNoteTempListForAdmin(
+    pageNum: $pageNum
+    perPage: $perPage
+    alcohol: $alcohol
+    createdAfter: $createdAfter
+    loginId: $loginId
+    createdBefore: $createdBefore
+    nickname: $nickname
+    sortBy: $sortBy
+    sortDirection: ""
+    title: ""
+    updatedAfter: ""
+    updatedBefore: ""
+  ) {
+    currentPage
+    totalCount
+    totalPages
+    perPage
+    data {
+      alcoholName
+      alcoholId
+      createdAt
+      deletedAt
+      drinkDate
+      isDeleted
+      rating
+      review
+      title
+      updatedAt
+      userId
+      userNickName
+    }
+  }
+}
 
 mutation modifyTastingNoteTemp($tastingNoteTemp: TnTRequestModify!) {
     tnTModify(request: $tastingNoteTemp) {
