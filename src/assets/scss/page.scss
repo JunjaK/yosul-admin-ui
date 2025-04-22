@@ -1,4 +1,37 @@
 .data-list-wrapper {
   margin-top: 24px;;
   height: 612px;
+  .data-pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+}
+.detail-header {
+  .n-card__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    .n-button {
+      width: 60px;
+    }
+  }
+}
+.detail-contents {
+  margin-top: 24px;
+  .detail-item {
+    display: flex;
+    align-items: center;
+    height: 24px;
+  }
+
+}
+.with-form-item {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 12px;
 }
