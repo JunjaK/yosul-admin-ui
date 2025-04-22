@@ -41,7 +41,7 @@ const { formModel } = storeToRefs(majorForm);
         <div class="search-filter-item">
           <n-form-item
             class="date-range-input"
-            label="검색어"
+            label="생성일"
             path="searchType"
           >
             <n-date-picker

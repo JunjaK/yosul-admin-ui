@@ -19,7 +19,7 @@ const rowKey = (row: UserRowData) => row.userId ?? 'error';
         <n-skeleton
           v-for="i in 11"
           :key="i"
-          height="42px"
+          :style="listSkeletonStyle"
         />
       </n-space>
     </template>
@@ -30,10 +30,12 @@ const rowKey = (row: UserRowData) => row.userId ?? 'error';
       <n-data-table
         :columns="majorList.dataColumns"
         :data="dataList"
-        :pagination="pagination"
         :row-key="rowKey"
         @update:checked-row-keys="handleCheck"
       />
+      <div class="data-pagination">
+        <n-pagination v-bind="pagination" />
+      </div>
     </template>
   </n-card>
 </template>

@@ -1,13 +1,11 @@
 import { ref } from 'vue';
-import type { FormInst, FormItemRule, DataTableColumns, DataTableRowKey } from 'naive-ui';
+import type { FormInst, FormItemRule, DataTableColumns, DataTableRowKey, PaginationProps } from 'naive-ui';
 import { useQuery } from '@tanstack/vue-query';
 import { useApolloClient } from '@vue/apollo-composable';
 import dayjs from 'dayjs';
 import type { GetUserListQuery, GetUserListQueryVariables } from '~/graphql/apis/graphql';
 import { GetUserListDocument } from '~/graphql/apis/graphql';
-import { defineLocalStore } from '~/plugins/storeManager';
-
-type OptionalGetUserListQueryVariables = Partial<GetUserListQueryVariables>;
+import { defineLocalStore, defineManualStore } from '~/plugins/storeManager';
 
 interface MajorForm {
   searchValue?: string;
@@ -25,7 +23,11 @@ export interface UserRowData {
   profileImageId?: string;
   userId?: string;
   userProfileImg?: string;
+  signUpType?: string;
+  userStatus?: string;
 }
+
+type OmitPageGetUserListQueryVariables = Omit<GetUserListQueryVariables, 'pageNum' | 'perPage'>;
 
 const inputOptions = [
   {
@@ -42,41 +44,6 @@ const inputOptions = [
   },
 ];
 
-const dataColumns: DataTableColumns<UserRowData> = [
-  {
-    type: 'selection',
-  },
-  {
-    key: 'userId',
-    title: '회원번호',
-  },
-  {
-    key: 'nickname',
-    title: '닉네임',
-  },
-  {
-    key: 'loginId',
-    title: '로그인 ID',
-  },
-
-  {
-    key: 'email',
-    title: '이메일',
-  },
-  {
-    key: 'phoneNumber',
-    title: '전화번호',
-  },
-  {
-    key: 'birthday',
-    title: '생년월일',
-  },
-  {
-    key: 'userProfileImg',
-    title: '프로필 이미지',
-  },
-];
-
 export default function main() {
   const majorForm = useMajorFormStore();
   const majorList = useMajorListStore();
@@ -87,8 +54,8 @@ export default function main() {
   };
 }
 
-const useMajorFormStore = defineLocalStore(defMajorFormStore);
-const useMajorListStore = defineLocalStore(defMajorListStore);
+export const useMajorFormStore = defineManualStore(defMajorFormStore, 'userMajorForm', );
+export const useMajorListStore = defineManualStore(defMajorListStore,'userMajorList', );
 
 function defMajorFormStore() {
   const formRef = ref<FormInst | null>(null);
@@ -105,12 +72,12 @@ function defMajorFormStore() {
 
     formRef.value?.validate((errors) => {
       if (errors) {
-        console.log(errors);
+        console.error(errors);
+        return;
       }
-      else {
-        majorList.updateSearchParams(formModel.value);
-        majorList.refetch();
-      }
+
+      majorList.updateSearchParams(formModel.value);
+      majorList.refetch();
     });
   }
 
@@ -124,46 +91,104 @@ function defMajorFormStore() {
 }
 
 function defMajorListStore() {
+  const router = useRouter();
   const { client } = useApolloClient();
   const dataList = ref<UserRowData[]>([]);
   const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 
-  const searchParams = ref<OptionalGetUserListQueryVariables>({
+  const dataColumns: DataTableColumns<UserRowData> = [
+    {
+      type: 'selection',
+    },
+    {
+      key: 'userId',
+      title: '회원번호',
+      width: 100,
+      align: 'center',
+    },
+    {
+      key: 'nickname',
+      title: '닉네임',
+      render(row) {
+        return h('a', {
+          style: {
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+          },
+          onClick: () => {
+            router.push(`/user/${row.userId}`);
+          },
+        }, [row.nickname]);
+      },
+      width: '30%',
+    },
+    {
+      key: 'loginId',
+      title: '로그인 ID',
+      width: '30%',
+    },
+
+    {
+      key: 'email',
+      title: '이메일',
+      width: '30%',
+    },
+    {
+      key: 'phoneNumber',
+      title: '전화번호',
+      width: 150,
+      align: 'center',
+    },
+    {
+      key: 'birthday',
+      title: '생년월일',
+      width: 150,
+      align: 'center',
+    },
+  ];
+
+  const searchParams = ref<OmitPageGetUserListQueryVariables>({
     nickname: '',
-    loginId: '',
     createdAfter: '',
     createdBefore: '',
-    updatedAfter: '',
-    updatedBefore: '',
-    userId: undefined,
   });
 
-  const pagination = reactive({
+  const pagination = reactive<PaginationProps>({
     page: 1,
     pageSize: 10,
-    onChange: (page: number) => {
+    itemCount: 0,
+    onUpdatePage(page) {
       pagination.page = page;
+      refetch();
     },
   });
 
   const { isLoading, error, refetch } = useQuery({
-    queryKey: ['users'],
+    queryKey: ['userList', { ...searchParams.value, pageNum: pagination.page, perPage: pagination.pageSize }],
     queryFn: async () => {
       const { data } = await client.query<GetUserListQuery>({
         query: GetUserListDocument,
-        variables: searchParams.value,
+        variables: {
+          ...searchParams.value,
+          pageNum: pagination.page,
+          perPage: pagination.pageSize,
+        },
       });
-      dataList.value = data.getUserList?.map((e) => {
+      pagination.itemCount = data.getUserList?.totalCount || 0;
+
+      dataList.value = data.getUserList?.data?.map((e) => {
         return {
           email: e?.email,
           birthday: e?.birthday,
-          isDeleted: e?.isDeleted,
+          // isDeleted: e?.isDeleted,
           loginId: e?.loginId,
           nickname: e?.nickname,
           phoneNumber: e?.phoneNumber,
-          profileImageId: e?.profileImageId,
           userId: e?.userId,
-          userProfileImg: e?.userProfileImg,
+          signUpType: e?.signUpType,
+          userStatus: e?.userStatus,
         };
       }) as UserRowData[] || [];
 
@@ -186,8 +211,6 @@ function defMajorListStore() {
       ...createdDates,
       [form.searchType]: form.searchValue || '',
     };
-
-    console.log(searchParams.value);
   }
 
   function handleCheck(keys: DataTableRowKey[]) {

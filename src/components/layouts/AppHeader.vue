@@ -21,7 +21,7 @@ const options = [
 ];
 
 const menuTitle = computed(() => {
-  return menuData.find(item => item.route === route.path)?.label || 'Dashboard';
+  return menuData.find(item => route.path.includes(item.route))?.label || 'Dashboard';
 });
 
 function handleSelect(key: string) {
