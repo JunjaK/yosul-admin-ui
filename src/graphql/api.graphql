@@ -70,6 +70,59 @@ query getUserList($pageNum: Int!, $perPage: Int!, $createdAfter: String, $create
   }
 }
 
+mutation createUser($loginId: String!, $email: String!, $password: String!) {
+    userCreate(
+        request: {
+            loginId: $loginId
+            email: $email
+            password: $password
+        }
+    ) {
+        userId
+        createdAt
+        updatedAt
+        userStatus
+        signUpType
+        phoneNumber
+        nickname
+        loginId
+        level
+        email
+        birthday
+    }
+}
+mutation modifyUser($id: ID!, $nickname: String, $email: String, $phoneNumber: String, $birthday: String, $profileImageId: Int) {
+    userModify(
+        id: $id
+        request: {
+            nickname: $nickname
+            email: $email
+            phoneNumber: $phoneNumber
+            birthday: $birthday
+            profileImageId: $profileImageId
+        }
+    ) {
+        userId
+        createdAt
+        updatedAt
+        userStatus
+        signUpType
+        phoneNumber
+        nickname
+        loginId
+        level
+        email
+        birthday
+    }
+}
+mutation deleteUser($id: ID!) {
+    userDelete(
+        id: $id
+    )
+}
+
+
+
 # Alcohol
 query getAlcoholDetail($alcoholId: ID!) {
     getAlcoholToAlcholId(alcoholId: $alcoholId) {
