@@ -22,7 +22,7 @@ const majorForm = useMajorFormStore();
         <template v-if="majorDetail.editMode">
           <n-button
             type="error"
-            @click="majorDetail.deleteUser"
+            @click="majorForm.checkDeleteUser"
           >
             삭제
           </n-button>

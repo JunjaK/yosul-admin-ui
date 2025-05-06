@@ -5,7 +5,7 @@ import { useApolloClient } from '@vue/apollo-composable';
 import dayjs from 'dayjs';
 import type { GetUserListQuery, GetUserListQueryVariables } from '~/graphql/apis/graphql';
 import { GetUserListDocument } from '~/graphql/apis/graphql';
-import { defineLocalStore, defineManualStore } from '~/plugins/storeManager';
+import { defineManualStore } from '~/plugins/storeManager';
 
 interface MajorForm {
   searchValue?: string;
@@ -54,8 +54,8 @@ export default function main() {
   };
 }
 
-export const useMajorFormStore = defineManualStore(defMajorFormStore, 'userMajorForm', );
-export const useMajorListStore = defineManualStore(defMajorListStore,'userMajorList', );
+export const useMajorFormStore = defineManualStore(defMajorFormStore, 'userMajorForm');
+export const useMajorListStore = defineManualStore(defMajorListStore, 'userMajorList');
 
 function defMajorFormStore() {
   const formRef = ref<FormInst | null>(null);
@@ -80,6 +80,15 @@ function defMajorFormStore() {
       majorList.refetch();
     });
   }
+  function onReset() {
+    formModel.value = {
+      searchType: 'nickname',
+      searchValue: '',
+      createdAt: null,
+    };
+    majorList.updateSearchParams(formModel.value);
+    majorList.refetch();
+  }
 
   return {
     formRef,
@@ -87,6 +96,7 @@ function defMajorFormStore() {
     rules,
     inputOptions,
     onSubmit,
+    onReset,
   };
 }
 
@@ -211,6 +221,7 @@ function defMajorListStore() {
       ...createdDates,
       [form.searchType]: form.searchValue || '',
     };
+    pagination.page = 1;
   }
 
   function handleCheck(keys: DataTableRowKey[]) {

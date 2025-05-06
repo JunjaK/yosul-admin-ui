@@ -1,10 +1,13 @@
-import { useQuery } from '@tanstack/vue-query';
-import { useApolloClient, useMutation } from '@vue/apollo-composable';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
+import { useApolloClient } from '@vue/apollo-composable';
+import dayjs from 'dayjs';
 import type { Maybe } from 'graphql/jsutils/Maybe';
 import type { FormInst, FormItemRule } from 'naive-ui';
-import type { GetUserQuery, UserResponseGet } from '~/graphql/apis/graphql';
-import { GetUserDocument } from '~/graphql/apis/graphql';
+import { useMajorListStore } from '../../_subs/user';
+import { ModifyUserDocument, GetUserDocument, DeleteUserDocument } from '~/graphql/apis/graphql';
+import type { DeleteUserMutation, GetUserQuery, ModifyUserMutation, UserResponseGet } from '~/graphql/apis/graphql';
 import { defineLocalStore } from '~/plugins/storeManager';
+// import { useLocalDialog, useLocalMessage } from '~/composables/naiveUI';
 
 interface MajorForm {
   nickname?: Maybe<string>;
@@ -39,9 +42,18 @@ function defMajorDetailStore() {
     loginId: '',
   });
 
+  const userId = computed(() => route.params.id);
+
+  const getDateFormat = (date?: string | null) => {
+    if (!date) return '';
+    return dayjs(date).format('YYYY-MM-DD'); ;
+  };
+
   const { isLoading, error, refetch } = useQuery({
-    queryKey: ['userDetail', route.params.id],
+    queryKey: ['userDetail', userId, detailData], // computed 값 사용
     queryFn: async () => {
+      if (!userId.value) return null;
+
       const { data } = await client.query<GetUserQuery>({
         query: GetUserDocument,
         variables: {
@@ -55,18 +67,17 @@ function defMajorDetailStore() {
 
       return data.getUser || [];
     },
-  });
-
-  onMounted(() => {
-    refetch();
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   function goList() {
     router.push('/user');
   }
 
-  function deleteUser() {
-    console.log('deleteUser');
+  function setDetailData(data: UserResponseGet) {
+    detailData.value = data;
   }
   function toggleEditMode() {
     editMode.value = !editMode.value;
@@ -77,15 +88,22 @@ function defMajorDetailStore() {
     isLoading,
     error,
     editMode,
+    getDateFormat,
     refetch,
     goList,
-    deleteUser,
     toggleEditMode,
+    setDetailData,
   };
 }
 
 function defMajorFormStore() {
   const { client } = useApolloClient();
+  const queryClient = useQueryClient(); // 쿼리 클라이언트 추가
+  const message = useLocalMessage();
+  const dialog = useLocalDialog();
+
+  const majorDetail = useMajorDetailStore();
+  const majorList = useMajorListStore();
 
   const formRef = ref<FormInst | null>(null);
   const formModel = ref<MajorForm>({
@@ -100,18 +118,22 @@ function defMajorFormStore() {
       message: '닉네임을 입력해주세요.',
     },
     email: {
-      required: true,
       message: '',
       trigger: ['input'],
       validator: (rule: FormItemRule, value: string) => {
+        if (value == null || value === '') {
+          return true;
+        }
         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
       },
     },
     phoneNumber: {
-      required: true,
       message: '올바른 휴대폰 번호를 입력해주세요.',
       trigger: ['input'],
       validator: (rule: FormItemRule, value: string) => {
+        if (value == null || value === '') {
+          return true;
+        }
         return /^01([0|1|6|7|8|9])-([0-9]{3,4})-([0-9]{4})$/.test(value);
       },
     },
@@ -121,13 +143,52 @@ function defMajorFormStore() {
     feedbackClass: 'detail-form-feedback',
   };
 
-  // const { isLoading, error, refetch } = useMutation({
-  //   mutationFn: async () => {
-  //     const { data } = await client.mutate<Modify>({
-  //       mutation: UpdateUserDocument,
-  //     });
-  //   },
-  // });
+  const { mutate: modifyUser, isPending: modifyUserLoading, isError: modifyUserError } = useMutation({
+    mutationKey: ['modify'],
+    mutationFn: async () => {
+      const { data } = await client.mutate<ModifyUserMutation>({
+        mutation: ModifyUserDocument,
+        variables: {
+          id: Number(majorDetail.detailData.userId),
+          nickname: formModel.value.nickname,
+          email: formModel.value.email,
+          phoneNumber: formModel.value.phoneNumber,
+          birthday: formModel.value.birthday,
+        },
+      });
+
+      return data?.userModify || null;
+    },
+    onSuccess(data) {
+      if (data) {
+        majorDetail.setDetailData(data);
+        majorDetail.toggleEditMode();
+
+        message.success('수정되었습니다.');
+        /**
+         * @todo tanstack query reset, invalidate가 제대로 먹히지 않음.. 이유 분석 필요.
+         */
+        queryClient.resetQueries({ queryKey: ['userList'], exact: false });
+        queryClient.resetQueries({ queryKey: ['userDetail'], exact: false });
+      }
+    },
+  });
+  const { mutate: deleteUser, isPending: deleteUserLoading, isError: deleteUserError } = useMutation({
+    mutationKey: ['delete'],
+    mutationFn: async () => {
+      await client.mutate<DeleteUserMutation>({
+        mutation: DeleteUserDocument,
+        variables: {
+          id: Number(majorDetail.detailData.userId),
+        },
+      });
+    },
+    onSuccess() {
+      message.warning('삭제되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['userList'], exact: false, refetchType: 'all' });
+      majorDetail.goList();
+    },
+  });
 
   function onSubmit(e: Event) {
     e.preventDefault();
@@ -137,6 +198,8 @@ function defMajorFormStore() {
         console.error(errors);
         return;
       }
+
+      modifyUser();
     });
   }
 
@@ -148,12 +211,30 @@ function defMajorFormStore() {
       birthday: data.birthday,
     };
   }
+  function checkDeleteUser() {
+    dialog.warning({
+      title: '회원 삭제',
+      content: `'${majorDetail.detailData.nickname}'님을 정말로 삭제하시겠습니까?`,
+      positiveText: '삭제',
+      negativeText: '취소',
+      onPositiveClick: () => {
+        deleteUser();
+      },
+    });
+  }
+
   return {
     formRef,
     formModel,
     rules,
     formItemClass,
+    modifyUserError,
+    modifyUserLoading,
+    modifyUser,
     onSubmit,
     setFormModel,
+    checkDeleteUser,
+    deleteUserLoading,
+    deleteUserError,
   };
 }

@@ -63,6 +63,7 @@ const { formModel } = storeToRefs(majorForm);
         </n-button>
         <n-button
           class="search-filter-button-item"
+          @click="majorForm.onReset"
         >
           초기화
         </n-button>

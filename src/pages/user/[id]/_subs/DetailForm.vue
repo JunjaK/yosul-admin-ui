@@ -100,6 +100,26 @@ const { formModel } = storeToRefs(majorForm);
           />
         </n-form-item>
       </n-descriptions-item>
+      <n-descriptions-item>
+        <template #label>
+          가입일자
+        </template>
+        <template #default>
+          <div class="detail-item">
+            {{ majorDetail.getDateFormat(majorDetail.detailData?.createdAt) }}
+          </div>
+        </template>
+      </n-descriptions-item>
+      <n-descriptions-item>
+        <template #label>
+          수정일자
+        </template>
+        <template #default>
+          <div class="detail-item">
+            {{ majorDetail.getDateFormat(majorDetail.detailData?.updatedAt) }}
+          </div>
+        </template>
+      </n-descriptions-item>
     </n-descriptions>
   </n-form>
 </template>

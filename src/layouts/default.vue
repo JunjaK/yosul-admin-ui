@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { darkTheme, dateKoKR, koKR } from 'naive-ui';
 import AppFooter from '~/components/layouts/AppFooter.vue';
 import AppNav from '~/components/layouts/AppHeader.vue';
 import LNB from '~/components/layouts/LNB.vue';
@@ -10,26 +9,21 @@ defineOptions({
 </script>
 
 <template>
-  <n-config-provider
-    :theme="darkTheme"
-    :locale="koKR"
-    :date-locale="dateKoKR"
-  >
-    <n-layout
-      has-sider
-      class="layout-wrapper"
-    >
-      <LNB />
-      <div class="layout-content">
-        <AppNav />
-        <n-layout-content>
-          <main class="main-content">
-            <slot />
-          </main>
-        </n-layout-content>
+  
+        <n-layout
+          has-sider
+          class="layout-wrapper"
+        >
+          <LNB />
+          <div class="layout-content">
+            <AppNav />
+            <n-layout-content>
+              <main class="main-content">
+                <slot />
+              </main>
+            </n-layout-content>
 
-        <AppFooter />
-      </div>
-    </n-layout>
-  </n-config-provider>
+            <AppFooter />
+          </div>
+        </n-layout>
 </template>

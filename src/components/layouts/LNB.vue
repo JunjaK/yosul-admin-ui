@@ -12,7 +12,7 @@ const { menuCollapsed } = storeToRefs(configStore);
 const selectedMenu = ref<string>('');
 
 const route = useRoute();
-selectedMenu.value = route.path;
+selectedMenu.value = '/' + `${route.path.split('/')[1]}` || 'dashboard';
 
 function renderIcon(name: string, className: string) {
   return () => h(Icon, { name: name, class: className });
