@@ -8,7 +8,7 @@ const majorForm = useMajorFormStore();
 <template>
   <section class="detail-header">
     <n-card hoverable>
-      <template v-if="majorDetail.detailData?.nickname">
+      <template v-if="!majorDetail.isLoading">
         <h3>
           {{ majorDetail.detailData?.nickname }}
         </h3>

@@ -14,9 +14,6 @@ importers:
       '@bg-dev/nuxt-naiveui':
         specifier: 2.0.0-rc.5
         version: 2.0.0-rc.5(magicast@0.3.5)(vue@3.5.13(typescript@5.8.2))
-      '@graphql-codegen/cli':
-        specifier: ^5.0.5
-        version: 5.0.5(@parcel/watcher@2.5.1)(@types/node@22.13.13)(graphql@16.10.0)(typescript@5.8.2)
       '@nuxt/eslint':
         specifier: ^1.2.0
         version: 1.2.0(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.23.0(jiti@2.4.2)))(eslint@9.23.0(jiti@2.4.2))(magicast@0.3.5)(typescript@5.8.2)(vite@6.2.3(@types/node@22.13.13)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.86.0)(terser@5.39.0)(yaml@2.7.0))
@@ -38,6 +35,9 @@ importers:
       '@tanstack/vue-query':
         specifier: ^5.69.0
         version: 5.69.0(vue@3.5.13(typescript@5.8.2))
+      '@tanstack/vue-query-devtools':
+        specifier: ^5.76.0
+        version: 5.76.0(@tanstack/vue-query@5.69.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
@@ -90,6 +90,9 @@ importers:
       '@antfu/eslint-config':
         specifier: ^4.11.0
         version: 4.11.0(@typescript-eslint/utils@8.28.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.23.0(jiti@2.4.2)))(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.13)(happy-dom@17.4.4)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.86.0)(terser@5.39.0)(yaml@2.7.0))
+      '@graphql-codegen/cli':
+        specifier: ^5.0.5
+        version: 5.0.5(@parcel/watcher@2.5.1)(@types/node@22.13.13)(graphql@16.10.0)(typescript@5.8.2)
       '@nuxt/test-utils':
         specifier: ^3.17.2
         version: 3.17.2(@types/node@22.13.13)(@vue/test-utils@2.4.6)(happy-dom@17.4.4)(jiti@2.4.2)(lightningcss@1.29.2)(magicast@0.3.5)(playwright-core@1.51.1)(sass@1.86.0)(terser@5.39.0)(typescript@5.8.2)(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.13)(happy-dom@17.4.4)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.86.0)(terser@5.39.0)(yaml@2.7.0))(yaml@2.7.0)
@@ -1572,6 +1575,15 @@ packages:
 
   '@tanstack/query-core@5.69.0':
     resolution: {integrity: sha512-Kn410jq6vs1P8Nm+ZsRj9H+U3C0kjuEkYLxbiCyn3MDEiYor1j2DGVULqAz62SLZtUZ/e9Xt6xMXiJ3NJ65WyQ==}
+
+  '@tanstack/query-devtools@5.76.0':
+    resolution: {integrity: sha512-1p92nqOBPYVqVDU0Ua5nzHenC6EGZNrLnB2OZphYw8CNA1exuvI97FVgIKON7Uug3uQqvH/QY8suUKpQo8qHNQ==}
+
+  '@tanstack/vue-query-devtools@5.76.0':
+    resolution: {integrity: sha512-5+AlC3gXDWV1SnxHOFfdUp4pL2SkypUGdDnAYOhZbubjqRrTvOtsCwqwvHJG/ohNmDayoZakjZ4dPcgbBI8oPA==}
+    peerDependencies:
+      '@tanstack/vue-query': ^5.76.0
+      vue: ^3.3.0
 
   '@tanstack/vue-query@5.69.0':
     resolution: {integrity: sha512-JZecDd0b+hZChqV5O1wXBfKoxlEj3aGvRj7upuqWei+oGrT+ERuOU4uQn7/DDVA5TouIt88G3oMFBjE2wKO/6A==}
@@ -7805,6 +7817,14 @@ snapshots:
       remove-accents: 0.5.0
 
   '@tanstack/query-core@5.69.0': {}
+
+  '@tanstack/query-devtools@5.76.0': {}
+
+  '@tanstack/vue-query-devtools@5.76.0(@tanstack/vue-query@5.69.0(vue@3.5.13(typescript@5.8.2)))(vue@3.5.13(typescript@5.8.2))':
+    dependencies:
+      '@tanstack/query-devtools': 5.76.0
+      '@tanstack/vue-query': 5.69.0(vue@3.5.13(typescript@5.8.2))
+      vue: 3.5.13(typescript@5.8.2)
 
   '@tanstack/vue-query@5.69.0(vue@3.5.13(typescript@5.8.2))':
     dependencies:

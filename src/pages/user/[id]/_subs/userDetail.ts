@@ -41,8 +41,9 @@ function defMajorDetailStore() {
     userId: '',
     loginId: '',
   });
+  const dataUpdated = ref(false);
 
-  const userId = computed(() => route.params.id);
+  const userId = computed(() => Number(route.params.id));
 
   const getDateFormat = (date?: string | null) => {
     if (!date) return '';
@@ -50,16 +51,19 @@ function defMajorDetailStore() {
   };
 
   const { isLoading, error, refetch } = useQuery({
-    queryKey: ['userDetail', userId, detailData], // computed 값 사용
+    queryKey: ['user', 'detail', { userId }], // computed 값 사용
     queryFn: async () => {
-      if (!userId.value) return null;
+      if (!userId) return null;
 
       const { data } = await client.query<GetUserQuery>({
         query: GetUserDocument,
         variables: {
-          userId: Number(route.params.id),
+          userId: userId.value,
         },
       });
+
+      dataUpdated.value = false;
+
       if (data.getUser) {
         detailData.value = data.getUser;
         majorForm.setFormModel(data.getUser);
@@ -68,8 +72,6 @@ function defMajorDetailStore() {
       return data.getUser || [];
     },
     staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
   });
 
   function goList() {
@@ -88,6 +90,7 @@ function defMajorDetailStore() {
     isLoading,
     error,
     editMode,
+    dataUpdated,
     getDateFormat,
     refetch,
     goList,
@@ -144,7 +147,7 @@ function defMajorFormStore() {
   };
 
   const { mutate: modifyUser, isPending: modifyUserLoading, isError: modifyUserError } = useMutation({
-    mutationKey: ['modify'],
+    mutationKey: ['user', 'modify'],
     mutationFn: async () => {
       const { data } = await client.mutate<ModifyUserMutation>({
         mutation: ModifyUserDocument,
@@ -159,22 +162,17 @@ function defMajorFormStore() {
 
       return data?.userModify || null;
     },
-    onSuccess(data) {
+    async onSuccess(data) {
       if (data) {
-        majorDetail.setDetailData(data);
         majorDetail.toggleEditMode();
-
         message.success('수정되었습니다.');
-        /**
-         * @todo tanstack query reset, invalidate가 제대로 먹히지 않음.. 이유 분석 필요.
-         */
-        queryClient.resetQueries({ queryKey: ['userList'], exact: false });
-        queryClient.resetQueries({ queryKey: ['userDetail'], exact: false });
+
+        queryClient.invalidateQueries({ queryKey: ['user'], exact: false, refetchType: 'all' });
       }
     },
   });
   const { mutate: deleteUser, isPending: deleteUserLoading, isError: deleteUserError } = useMutation({
-    mutationKey: ['delete'],
+    mutationKey: ['user', 'delete'],
     mutationFn: async () => {
       await client.mutate<DeleteUserMutation>({
         mutation: DeleteUserDocument,
@@ -185,7 +183,7 @@ function defMajorFormStore() {
     },
     onSuccess() {
       message.warning('삭제되었습니다.');
-      queryClient.invalidateQueries({ queryKey: ['userList'], exact: false, refetchType: 'all' });
+      queryClient.invalidateQueries({ queryKey: ['user', 'list'], exact: false, refetchType: 'all' });
       majorDetail.goList();
     },
   });

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import {  darkTheme, dateKoKR, koKR } from 'naive-ui';
-
-
+import { darkTheme, dateKoKR, koKR } from 'naive-ui';
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 </script>
 
 <template>
@@ -13,5 +12,6 @@ import {  darkTheme, dateKoKR, koKR } from 'naive-ui';
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+    <VueQueryDevtools />
   </n-config-provider>
 </template>

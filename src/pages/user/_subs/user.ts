@@ -176,7 +176,7 @@ function defMajorListStore() {
   });
 
   const { isLoading, error, refetch } = useQuery({
-    queryKey: ['userList', { ...searchParams.value, pageNum: pagination.page, perPage: pagination.pageSize }],
+    queryKey: ['users', 'list', pagination.page, pagination.pageSize, searchParams.value],
     queryFn: async () => {
       const { data } = await client.query<GetUserListQuery>({
         query: GetUserListDocument,

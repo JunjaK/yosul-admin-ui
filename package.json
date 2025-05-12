@@ -22,6 +22,7 @@
     "@parcel/watcher": "^2.5.1",
     "@tailwindcss/vite": "^4.0.16",
     "@tanstack/vue-query": "^5.69.0",
+    "@tanstack/vue-query-devtools": "^5.76.0",
     "@types/uuid": "^10.0.0",
     "@vue/apollo-composable": "^4.2.2",
     "@vueuse/motion": "^3.0.3",
