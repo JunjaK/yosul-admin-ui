@@ -264,6 +264,7 @@ query getTastingNoteList($pageNum: Int!, $perPage: Int!, $alcohol: String, $crea
             alcoholId
             createdAt
             deletedAt
+            updatedAt
             drinkDate
             review
             rating
@@ -271,6 +272,9 @@ query getTastingNoteList($pageNum: Int!, $perPage: Int!, $alcohol: String, $crea
             userNickName
             title
             isDeleted
+            tastingNoteId
+            commentCount
+            likeCount
         }
         perPage
         totalCount

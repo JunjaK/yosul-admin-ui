@@ -11,9 +11,9 @@ const menuData: MenuItem[] = [
     route: '/user',
   },
   {
-    label: '게시글 관리',
+    label: '테이스팅 노트 관리',
     icon: 'lucide:notebook-pen',
-    route: '/article',
+    route: '/tasting-note',
   },
   {
     label: '댓글 관리',
