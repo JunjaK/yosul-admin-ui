@@ -13,6 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache
+        uses: actions/cache@v4
+
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
@@ -34,5 +37,12 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
-      - name: Start Nuxt Server
-        run: pm2 restart yosul-admin
+      - name: Check if PM2 process exists and start/restart
+        run: |
+          if pm2 list | grep -q "yosul-admin"; then
+            echo "PM2 process exists, restarting..."
+            pm2 restart yosul-admin
+          else
+            echo "PM2 process does not exist, starting..."
+            cd $GITHUB_WORKSPACE && pm2 start npm --name "yosul-admin" -- start
+          fi
