@@ -54,7 +54,7 @@ jobs:
     steps:
       - name: Check if PM2 process exists and start/restart
         run: |
-          if pm2 list | grep -q "yosul-admin"; then
+          if pm2 list | grep -E "(^|\s)yosul-admin-runner($|\s)" -q; then
             echo "PM2 process exists, restarting..."
             pm2 restart yosul-admin
           else
