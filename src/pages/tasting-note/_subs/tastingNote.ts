@@ -9,7 +9,7 @@ import { defineManualStore } from '~/plugins/storeManager';
 
 interface MajorForm {
   searchValue?: string;
-  searchType: 'nickname' | 'username' | 'userId';
+  searchType: 'nickname' | 'nickname' | 'title';
   createdAt: [number, number] | null;
 }
 
@@ -35,7 +35,7 @@ const inputOptions = [
     value: 'alcohol',
   },
   {
-    label: '닉네임',
+    label: '작성자',
     value: 'nickname',
   },
   {

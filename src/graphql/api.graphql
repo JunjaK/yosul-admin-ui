@@ -282,8 +282,8 @@ query getTastingNoteList($pageNum: Int!, $perPage: Int!, $alcohol: String, $crea
     }
 }
 
-query getTastingNoteDetail($tastingNoteId: ID!, $userId: ID!) {
-    getTastingNotesId(tastingNoteId: $tastingNoteId, userId: $userId) {
+query getTastingNoteDetail($tastingNoteId: ID!) {
+    getTastingNoteForAdmin(tastingNoteId: $tastingNoteId) {
         acidity
         afterglow
         alcoholId
@@ -310,6 +310,7 @@ query getTastingNoteDetail($tastingNoteId: ID!, $userId: ID!) {
         hashTag
         pairingRate
         purchasePrice
+        userNickName
         rating
         review
         scentType
@@ -349,7 +350,6 @@ mutation modifyTastingNote ($tastingNote: TnRequestModify!) {
         scentType
         sparkling
         sweety
-        tastingNoteId
         temperature
         title
         togetherComment

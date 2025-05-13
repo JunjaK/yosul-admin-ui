@@ -8,6 +8,9 @@ import Components from 'unplugin-vue-components/vite';
 export default defineNuxtConfig({
   compatibilityDate: '2025-04-01',
   devtools: { enabled: true },
+  devServer: {
+    port: 4000,
+  },
   srcDir: 'src/',
   build: {
     transpile: process.env.NODE_ENV === 'production' ? ['naive-ui', 'vueuc', '@css-render/vue3-ssr', '@juggle/resize-observer', 'date-fns', '@css-render/plugin-bem'] : ['@juggle/resize-observer'],

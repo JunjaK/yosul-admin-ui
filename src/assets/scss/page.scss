@@ -27,7 +27,20 @@
     display: flex;
     align-items: center;
     height: 24px;
+    .user-link {
+      text-decoration: underline;
+    }
+    &.pictures {
+      display: unset;
+      height: unset;
+      .carousel-img{
+        height: 100%;
+        object-fit: cover;
+        border-radius: 1rem;
+      }
+    }
   }
+
 
 }
 .with-form-item {
