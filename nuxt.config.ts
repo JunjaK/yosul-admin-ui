@@ -7,6 +7,12 @@ import Components from 'unplugin-vue-components/vite';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-04-01',
+  runtimeConfig: {
+    public: {
+      host: process.env.NUXT_PUBLIC_HOST,
+      port: process.env.NUXT_PUBLIC_PORT,
+    },
+  },
   devtools: { enabled: true },
   devServer: {
     port: 4000,

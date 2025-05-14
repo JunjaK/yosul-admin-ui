@@ -52,12 +52,8 @@ jobs:
     runs-on: self-hosted
     needs: build
     steps:
-      - name: Check if PM2 process exists and start/restart
+      - name: PM2 Process Management
         run: |
-          if pm2 list | grep -E "(^|\s)yosul-admin($|\s)" -q; then
-            echo "PM2 process exists, restarting..."
-            pm2 restart yosul-admin
-          else
-            echo "PM2 process does not exist, starting..."
-            cd $GITHUB_WORKSPACE && pm2 start npm --name "yosul-admin" -- start
-          fi
+          pm2 reload ecosystem.config.cjs --env production
+          pm2 save
+          pm2 startup
